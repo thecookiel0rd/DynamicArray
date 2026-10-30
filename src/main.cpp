@@ -1,15 +1,16 @@
-#include "DynamicArray.h"
+#include "../include/DynamicArray.h"
 #include <iostream>
 #include <new>
 #include <stdexcept>
+#include <string>
+#include <typeinfo>
 
 int main() {
 
   // Задание 1: Базовый класс, методы set, get, operator[], вывод print
-
   std::cout << "=== Task 1: Base class, setter, getter, operator[], print ==="
             << std::endl;
-  DynamicArray arr1(3);
+  DynamicArray<int> arr1(3);
   arr1.set(0, 10);
   arr1.set(1, -50);
   arr1.set(2, 100);
@@ -20,15 +21,12 @@ int main() {
 
   std::cout << "\n=== Testing Exceptions (specific types) ===" << std::endl;
 
-  // 1. Исключение std::invalid_argument при выходе значения за диапазон [-100,
-  // 100]
+  // 1. Исключение std::invalid_argument при выходе значения за диапазон [-100, 100]
   try {
     arr1.set(0, 150);
   } catch (const std::invalid_argument &e) {
     std::cout << "Caught std::invalid_argument (set > 100): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
   try {
@@ -36,8 +34,6 @@ int main() {
   } catch (const std::invalid_argument &e) {
     std::cout << "Caught std::invalid_argument (set < -100): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
   try {
@@ -45,126 +41,157 @@ int main() {
   } catch (const std::invalid_argument &e) {
     std::cout << "Caught std::invalid_argument (push_back > 100): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
-  // 2. Исключение std::out_of_range при выходе индекса за границы через метод
-  // get()
+  // 2. Исключение std::out_of_range при выходе индекса за границы через метод get()
   try {
     arr1.get(10);
   } catch (const std::out_of_range &e) {
     std::cout << "Caught std::out_of_range (get(10)): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
-  // 3. Исключение std::out_of_range при выходе индекса за границы через
-  // operator[]
+  // 3. Исключение std::out_of_range при выходе индекса за границы через operator[]
   try {
     std::cout << arr1[10] << std::endl;
   } catch (const std::out_of_range &e) {
     std::cout << "Caught std::out_of_range (arr1[10]): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
-  // 4. Исключение std::out_of_range при выходе индекса за границы через метод
-  // at()
+  // 4. Исключение std::out_of_range при выходе индекса за границы через метод at()
   try {
     std::cout << arr1.at(10) << std::endl;
   } catch (const std::out_of_range &e) {
     std::cout << "Caught std::out_of_range (arr1.at(10)): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
-  // 5. Исключение std::out_of_range при выходе индекса за границы через метод
-  // set()
+  // 5. Исключение std::out_of_range при выходе индекса за границы через метод set()
   try {
     arr1.set(10, 50);
   } catch (const std::out_of_range &e) {
     std::cout << "Caught std::out_of_range (set(10, 50)): " << e.what()
               << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
-  // 6. Исключение std::bad_alloc при ошибке выделения памяти (запрос слишком
-  // большого размера)
+  // 6. Исключение std::bad_alloc при ошибке выделения памяти
   try {
     std::size_t huge_size = 1000000000000ULL;
     std::cout << "Attempting to allocate huge array of size: " << huge_size
               << "..." << std::endl;
-    DynamicArray huge_arr(huge_size);
+    DynamicArray<int> huge_arr(huge_size);
   } catch (const std::bad_alloc &e) {
     std::cout << "Caught std::bad_alloc: " << e.what() << std::endl;
-  } catch (const std::exception &e) {
-    std::cout << "Caught generic std::exception: " << e.what() << std::endl;
   }
 
-  // Задание 2: Конструктор копирования
 
   std::cout << "\n=== Task 2: Copy constructor ===" << std::endl;
-  DynamicArray arr2 = arr1;
+  DynamicArray<int> arr2 = arr1;
   arr2[0] = 42;
   std::cout << "arr1 (original): ";
   arr1.print();
   std::cout << "arr2 (copy with modified [0]): ";
   arr2.print();
 
-  // Задание 3: Добавление элементов в конец (push_back)
-
-  std::cout << "\n=== Task 3: Push back ===" << std::endl;
+ 
+  std::cout << "\n=== Push back ===" << std::endl;
   arr1.push_back(-99);
   arr1.push_back(77);
   std::cout << "arr1 after push_back: ";
   arr1.print();
 
-  // Задание 4: Сложение и вычитание массивов (add и sub)
-
+  // Сложение и вычитание массивов (add и sub)
+ // Сложение и вычитание массивов (add и sub)
   std::cout << "\n=== Task 4: Addition and subtraction ===" << std::endl;
-  DynamicArray a(3);
+  DynamicArray<int> a(3);
   a.set(0, 10);
   a.set(1, 20);
   a.set(2, 30);
 
-  DynamicArray b(3);
+  DynamicArray<int> b(3);
   b.set(0, 5);
   b.set(1, 5);
   b.set(2, 5);
 
-  std::cout << "Array A: ";
-  a.print();
-  std::cout << "Array B: ";
-  b.print();
+  std::cout << "Array A: " << a << std::endl;
+  std::cout << "Array B: " << b << std::endl;
 
-  // Сложение массивов одинаковой длины
   a.add(b);
-  std::cout << "A after a.add(b): ";
-  a.print();
+  std::cout << "A after a.add(b): " << a << std::endl;
 
-  // Вычитание массивов одинаковой длины
   a.sub(b);
-  std::cout << "A after a.sub(b): ";
-  a.print();
+  std::cout << "A after a.sub(b): " << a << std::endl;
 
-  // Проверка исключений при несовпадении размеров массивов
-  std::cout << "\nTesting add / sub with mismatched sizes:" << std::endl;
-  DynamicArray diff_size_arr(5);
+  // Проверка сложения и вычитания с несовпадающими размерами
+  std::cout << "\nTesting add / sub with mismatched sizes (missing elements = 0):" << std::endl;
+  DynamicArray<int> shorter(2);
+  shorter.set(0, 3);
+  shorter.set(1, 4);
+
+  std::cout << "Initial A: " << a << " (size: " << a.size() << ")" << std::endl;
+  std::cout << "Shorter: " << shorter << " (size: " << shorter.size() << ")" << std::endl;
+
+  a.add(shorter); // a[0]+=3, a[1]+=4, a[2]+=0
+  std::cout << "A after adding shorter: " << a << std::endl;
+
+  DynamicArray<int> longer(5);
+  longer.set(0, 1);
+  longer.set(1, 1);
+  longer.set(2, 1);
+  longer.set(3, 10);
+  longer.set(4, 20);
+
+  std::cout << "\nLonger: " << longer << " (size: " << longer.size() << ")" << std::endl;
+  a.sub(longer); // a[0]-=1, a[1]-=1, a[2]-=1 (размер А остается равным 3)
+  std::cout << "A after subtracting longer: " << a << " (size remains: " << a.size() << ")" << std::endl;
+
+
+  std::cout << "\n=== Part 3, Task 2: Testing operator<< and non-numeric type ===" << std::endl;
+  DynamicArray<std::string> arr_str(2);
+  arr_str.set(0, "MAI");
+  arr_str.set(1, "Number");
+  arr_str.push_back("One");
+
+  std::cout << "String array via operator<<: " << arr_str << std::endl;
+
+
+  std::cout << "\n=== Part 3, Task 3: Distance between arrays ===" << std::endl;
+  DynamicArray<double> vec1(3);
+  vec1.set(0, 1.0);
+  vec1.set(1, 2.0);
+  vec1.set(2, 3.0);
+
+  DynamicArray<double> vec2(3);
+  vec2.set(0, 4.0);
+  vec2.set(1, 6.0);
+  vec2.set(2, 3.0);
+
+
+  std::cout << "vec1: " << vec1 << std::endl;
+  std::cout << "vec2: " << vec2 << std::endl;
+  std::cout << "Distance between vec1 and vec2: " << vec1.distance(vec2) << std::endl;
+
+
+  DynamicArray<double> vec3(2);
+  vec3.set(0, 1.0);
+  vec3.set(1, 1.0);
   try {
-    a.add(diff_size_arr);
-  } catch (const std::out_of_range &e) {
-    std::cout << "Caught std::out_of_range in add: " << e.what() << std::endl;
+    std::cout << "Calculating distance with mismatched sizes..." << std::endl;
+    vec1.distance(vec3);
+  } catch (const std::invalid_argument &e) {
+    std::cout << "Caught std::invalid_argument: " << e.what() << std::endl;
   }
 
+
+  DynamicArray<std::string> arr_str2(2);
+  arr_str2.set(0, "Test");
+  arr_str2.set(1, "Data");
   try {
-    a.sub(diff_size_arr);
-  } catch (const std::out_of_range &e) {
-    std::cout << "Caught std::out_of_range in sub: " << e.what() << std::endl;
+    std::cout << "Calculating distance for non-numeric arrays..." << std::endl;
+    arr_str.distance(arr_str2);
+  } catch (const std::bad_typeid &e) {
+    std::cout << "Caught std::bad_typeid: non-numeric array type!" << std::endl;
   }
 
   return 0;
