@@ -86,7 +86,7 @@ int main() {
   }
 
 
-  std::cout << "\n=== Task 2: Copy constructor ===" << std::endl;
+  std::cout << "\n=== Task 1.2: Copy constructor ===" << std::endl;
   DynamicArray<int> arr2 = arr1;
   arr2[0] = 42;
   std::cout << "arr1 (original): ";
@@ -95,15 +95,14 @@ int main() {
   arr2.print();
 
  
-  std::cout << "\n=== Push back ===" << std::endl;
+  std::cout << "\n=== Task 1.3: Push back ===" << std::endl;
   arr1.push_back(-99);
   arr1.push_back(77);
   std::cout << "arr1 after push_back: ";
   arr1.print();
 
-  // Сложение и вычитание массивов (add и sub)
- // Сложение и вычитание массивов (add и sub)
-  std::cout << "\n=== Task 4: Addition and subtraction ===" << std::endl;
+// Сложение и вычитание массивов (add и sub)
+  std::cout << "\n=== Task 1.4: Addition and subtraction ===" << std::endl;
   DynamicArray<int> a(3);
   a.set(0, 10);
   a.set(1, 20);
@@ -143,11 +142,11 @@ int main() {
   longer.set(4, 20);
 
   std::cout << "\nLonger: " << longer << " (size: " << longer.size() << ")" << std::endl;
-  a.sub(longer); // a[0]-=1, a[1]-=1, a[2]-=1 (размер А остается равным 3)
-  std::cout << "A after subtracting longer: " << a << " (size remains: " << a.size() << ")" << std::endl;
+  a.sub(longer);
+  std::cout << "A after subtracting longer: " << a << std::endl;
 
 
-  std::cout << "\n=== Part 3, Task 2: Testing operator<< and non-numeric type ===" << std::endl;
+  std::cout << "\n=== Task 3.2: Testing operator << and non-numeric type ===" << std::endl;
   DynamicArray<std::string> arr_str(2);
   arr_str.set(0, "MAI");
   arr_str.set(1, "Number");
@@ -156,7 +155,7 @@ int main() {
   std::cout << "String array via operator<<: " << arr_str << std::endl;
 
 
-  std::cout << "\n=== Part 3, Task 3: Distance between arrays ===" << std::endl;
+  std::cout << "\nTask 3.3: Distance between arrays ===" << std::endl;
   DynamicArray<double> vec1(3);
   vec1.set(0, 1.0);
   vec1.set(1, 2.0);
@@ -193,6 +192,113 @@ int main() {
   } catch (const std::bad_typeid &e) {
     std::cout << "Caught std::bad_typeid: non-numeric array type!" << std::endl;
   }
+
+
+  // Задание 4.1: operator[] с проверкой выхода за границы и валидацией диапазона 
+  std::cout << "\n=== Task 4.1: operator[] & bounds/value checks ===\n";
+  DynamicArray<int> arr(3);
+  arr[0] = 10;
+  arr[1] = 20;
+  arr[2] = 30;
+  std::cout << "arr: " << arr << std::endl;
+
+  try {
+    std::cout << "Attempting to assign out-of-range value via arr[0] = 150...\n";
+    arr[0] = 150;
+  } catch (const std::invalid_argument &e) {
+    std::cout << "Caught std::invalid_argument: " << e.what() << std::endl;
+  }
+
+  try {
+    std::cout << "Attempting to assign out-of-range value via arr[0] = -120...\n";
+    arr[0] = -120;
+  } catch (const std::invalid_argument &e) {
+    std::cout << "Caught std::invalid_argument: " << e.what() << std::endl;
+  }
+
+  try {
+    std::cout << "Attempting out-of-bounds access via arr[10]...\n";
+    std::cout << arr[10] << std::endl;
+  } catch (const std::out_of_range &e) {
+    std::cout << "Caught std::out_of_range: " << e.what() << std::endl;
+  }
+
+  //  Задание 4.2: operator== и operator!= 
+  std::cout << "\n=== Task 4.2: Comparison operators (==, !=) ===\n";
+  DynamicArray<int> arr_copy = arr;
+  DynamicArray<int> arr_diff(3);
+  arr_diff[0] = 10;
+  arr_diff[1] = 20;
+  arr_diff[2] = 99;
+
+  DynamicArray<int> arr_diff_size(2);
+  arr_diff_size[0] = 10;
+  arr_diff_size[1] = 20;
+
+  std::cout << "arr: " << arr << std::endl;
+  std::cout << "arr_copy: " << arr_copy << std::endl;
+  std::cout << "arr_diff: " << arr_diff << std::endl;
+  std::cout << "arr_diff_size: " << arr_diff_size << std::endl;
+
+  std::cout << std::boolalpha;
+  std::cout << "arr == arr_copy: " << (arr == arr_copy) << " (expected: true)\n";
+  std::cout << "arr != arr_copy: " << (arr != arr_copy) << " (expected: false)\n";
+  std::cout << "arr == arr_diff: " << (arr == arr_diff) << " (expected: false)\n";
+  std::cout << "arr != arr_diff: " << (arr != arr_diff) << " (expected: true)\n";
+  std::cout << "arr == arr_diff_size: " << (arr == arr_diff_size) << " (expected: false)\n";
+
+  // Задание 4.3: operator+= и operator-= для массивов и скаляров
+  std::cout << "\n=== Task 4.3: Arithmetic compound operators (+=, -=) ===\n";
+  DynamicArray<int> op_arr(3);
+  op_arr[0] = 10;
+  op_arr[1] = 20;
+  op_arr[2] = 30;
+
+  DynamicArray<int> delta(2);
+  delta[0] = 5;
+  delta[1] = 5;
+
+  std::cout << "Initial op_arr: " << op_arr << std::endl;
+  op_arr += delta;
+  std::cout << "op_arr += delta (shorter array [5, 5]): " << op_arr << std::endl;
+
+  op_arr -= delta;
+  std::cout << "op_arr -= delta: " << op_arr << std::endl;
+
+  op_arr += 10;
+  std::cout << "op_arr += 10 (scalar): " << op_arr << std::endl;
+
+  op_arr -= 5;
+  std::cout << "op_arr -= 5 (scalar): " << op_arr << std::endl;
+
+  try {
+    std::cout << "Testing overflow check in scalar operator+= (op_arr += 90)...\n";
+    op_arr += 90;
+  } catch (const std::invalid_argument &e) {
+    std::cout << "Caught std::invalid_argument: " << e.what() << std::endl;
+  }
+
+  // Задание 4.4: итераторы begin() и end() 
+  std::cout << "\n=== Task 4.4: Iterators (begin, end) and range-based for ===\n";
+  DynamicArray<int> loop_arr(4);
+  loop_arr[0] = 1;
+  loop_arr[1] = 2;
+  loop_arr[2] = 3;
+  loop_arr[3] = 4;
+
+  std::cout << "Original elements via const ref: ";
+  for (const auto &x : loop_arr) {
+    std::cout << x << " ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "Modifying elements in range-for (x *= 10)...\n";
+  for (auto &x : loop_arr) {
+    x *= 10;
+  }
+
+  std::cout << "Modified array: " << loop_arr << std::endl;
+
 
   return 0;
 }
